@@ -43,24 +43,43 @@ public class RotateArray {
     }
 
     /**
-     * 当作一个环。使用双指针实现
+     * 类似约瑟夫环，移动过的就不在移动
      */
-    public void rotate3(int[] nums, int k){
-        int i,len = nums.length - k;
-        for (i = 0; i < len; i++){
-            int temp = nums[i];
-            nums[i] = nums[k];
-            nums[k] = temp;
-            k %= len;
+    public void rotate3(int[] nums, int k) {
+        int len = nums.length;
+        boolean[] moved = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            //若未移动过则进行移动
+            if (moved[i] != true) {
+                move(nums, moved, i, k);
+            }
+        }
+    }
+
+    /**
+     * @param loc 当前需要移动元素的位置
+     * @param k   移动多少
+     */
+    public void move(int[] nums, boolean[] moved, int loc, int k) {
+        int hold = nums[loc], len = nums.length;
+        while (moved[loc] == false) {
+            //取得当前元素
+            int temp = hold;
+            moved[loc] = true;
+            //计算当前元素的右移动后位置
+            loc = (loc + k) % len;
+            //保存下一个元素，并放下当前元素
+            hold = nums[loc];
+            nums[loc] = temp;
         }
     }
 
     @Test
     public void mytest() {
-        int[] nums = {1, 2, 3, 4, 5, 6, 7};
+        int[] nums = {1, 2, 3, 4, 5, 6};
         for (int i = 0; i < nums.length; i++) {
             int[] temp = nums.clone();
-            rotate2(temp, i);
+            rotate3(temp, i);
             for (int j : temp) {
                 System.out.print(j + " ");
             }
